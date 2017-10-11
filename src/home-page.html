@@ -1,0 +1,44 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="home-page">
+  <template>
+    <style include="shared-styles">
+      :host {
+        display: block;
+        padding: 10px;
+      }
+      body {
+        margin: 0;
+        font-family: 'Roboto', 'Noto', sans-serif;
+        line-height: 1.5;
+        min-height: 100vh;
+          background-image: none;
+        background-color: #eeeeee;
+      }
+    </style>
+
+
+
+    <div class="card">
+      <h1>Welcome</h1>
+      <blockquote>Interintel Technology</blockquote>
+      <h1>Home you are logged in</h1>
+    </div>
+
+  </template>
+
+  <script>
+    (function() {
+      Polymer({
+        is: 'home-page',
+
+        getDetails: function() {
+        //
+        }
+      });
+    }());
+  </script>
+</dom-module>

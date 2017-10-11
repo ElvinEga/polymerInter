@@ -1,0 +1,152 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../bower_components/iron-localstorage/iron-localstorage.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="app-data.html">
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="array-page">
+  <template>
+    <style include="shared-styles">
+      :host {
+        display: block;
+        padding: 10px;
+      }
+    </style>
+
+    <iron-localstorage name="user-storage" value="{{storedUser}}" on-iron-localstorage-load="initStoredUser"></iron-localstorage>
+
+    <app-data key="userData" data="{{storedUser}}"></app-data>
+
+
+    <div class="card">
+      <h1><iron-icon icon="fa:line-chart"></iron-icon>List</h1>
+<iron-icon icon="fa:line-chart"></iron-icon>
+      <div hidden$="[[!storedUser.loggedin]]">
+        <p>Hello, [[storedUser.name]]! You have access to The List:</p>
+        <paper-button class="primary" raised="" on-tap="getArray">Get List</paper-button>
+
+
+    <div> Elements list: </div>
+    <template is="dom-repeat" items="{{elements}}">
+        <hr>
+        <div>Key: <span>{{item.value}}</span></div>
+        <div>Value: <span>{{item.key}}</span></div>
+    </template>
+
+
+      </div>
+
+      <p hidden$="[[storedUser.loggedin]]">You must <a href="/login-page">log in</a> to access the List</p>
+    </div>
+  </template>
+
+  <script>
+    (function() {
+      Polymer({
+        is: 'array-page',
+
+        properties: {
+          storedUser: Object
+        },
+
+        initStoredUser: function() {
+          //  verify if logged in and if so, preload a secret quote
+          if (this.storedUser.loggedin) {
+            this.getArray();
+          }
+        },
+
+        getArray: function() {
+          const dict = {'34': 'thirty-four', '90': 'ninety',
+      '91': 'ninety-one','21': 'twenty-one',
+      '61': 'sixty-one', '9': 'nine',
+      '2': 'two', '6': 'six', '3': 'three',
+      '8': 'eight', '80': 'eighty', '81': 'eighty-one',
+      'Ninety-Nine': '99', 'nine-hundred': '900',};
+
+      /**
+       * Used to sort numbers in order
+       * @param {Number} a
+       * @param {Number} b
+       * @return {Number} difference
+       */
+      function sortNumber(a,b) {
+          return a - b;
+      }
+      /**
+       * Used to sort numbers in order
+       * @param {Dictionary} dict
+       * @return {Dictionary} sorted
+       */
+      function sortOnKeys(dict) {
+        const sortedNum = [];
+        const sortedWord = [];
+
+        //loop for every key in dict
+        for(const key in dict) {
+
+      //check if key is a number or not
+          if(isNaN(key)){;
+            sortedWord[sortedWord.length] = key;
+          }else{
+            sortedNum[sortedNum.length] = key;
+          }
+        }
+        //sort Alphabets
+        sortedWord.sort();
+        //sort Integer Numbers
+        sortedNum.sort(sortNumber);
+
+        const sorted = {};
+        const keys = [];
+
+        let i,j,len,len2;
+
+        len = sortedNum.length;
+        len2 = sortedWord.length;
+
+        //Assign every sorted number to dict
+        for (i=0 ; i < len; i++) {
+          k = sortedNum[i];
+          keys.push(sortedNum[i]);
+
+          sorted[k] =dict[k];
+        //myArray.push(sortedNum[i]);
+
+          console.log(`${k}:${dict[k]}`);
+        }
+
+        //assign every sorted alphabet word to dicy
+        for (j=0 ; j < len2; j++) {
+        k = sortedWord[j];
+        keys.push(sortedWord[j]);
+
+      sorted[k] =dict[k];
+
+
+      }
+
+
+        return sorted;
+      }
+      const aee =sortOnKeys(dict);
+    //  var objKey = '';
+        var objValue = [];
+//  var response = JSON.parse(aee);
+ var response = aee;
+      console.log(response);
+
+      Object.keys(response).forEach(function(k){
+    console.log(k + ' - ' + response[k]);
+//    objKey.push({"key":k});
+        objValue.push({"value":response[k],"key":k});
+});
+
+      this.elements = objValue;
+        console.log(objValue);
+        }
+      });
+    }());
+  </script>
+</dom-module>

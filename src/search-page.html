@@ -1,0 +1,98 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/app-route/app-location.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../bower_components/iron-localstorage/iron-localstorage.html">
+<link rel="import" href="../bower_components/iron-input/iron-input.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="search-page">
+  <template>
+    <style include="shared-styles">
+      :host {
+        display: block;
+        padding: 10px;
+      }
+      body {
+        margin: 0;
+        font-family: 'Roboto', 'Noto', sans-serif;
+        line-height: 1.5;
+        min-height: 100vh;
+          background-image: none;
+        background-color: #eeeeee;
+      }
+    </style>
+    <app-location route="{{route}}"></app-location>
+    <iron-ajax id="getSearchAjax" auto="" method="get" handle-as="json" on-response="handleSearchResponse" on-error="handleSearchError"></iron-ajax>
+
+    <div class="card">
+      <h1>Search</h1>
+      <paper-input-container>
+        <label>Search</label>
+        <input is="iron-input" id="search" type="text" bind-value="{{searchInput}}">
+      </paper-input-container>
+      <paper-button class="primary" raised="" on-tap="getSearch">Search</paper-button>
+    </div>
+
+    <div>Search list: </div>
+    <template is="dom-repeat" items="{{elements}}">
+        <hr>
+        <div><strong>Name: </strong><span>{{item.name}}</span></div>
+        <div><strong>Email: </strong><span>{{item.email}}</span></div>
+    </template>
+
+  </template>
+
+  <script>
+    (function() {
+      Polymer({
+        is: 'search-page',
+        properties: {
+          searchData: {
+            type: Object,
+            value: {}
+          },
+          searchInput: {
+            type: String
+          },
+          storedUser: Object,
+          error: String
+        },
+
+
+        getSearch: function() {
+              console.log(this.searchInput);
+        //  this.$.registerLoginAjax.url = 'https://interdjango.herokuapp.com/users/login/';
+        //  this.$.getSearchAjax.url = 'http://localhost:8000/users/search_users/'+this.searchInput+'/';
+          this.$.getSearchAjax.url = 'https://interdjango.herokuapp.com/users/search_users/'+this.searchInput+'/';
+          this.$.getSearchAjax.generateRequest();
+        },
+        handleSearchResponse: function(event) {
+          console.log(event);
+          //var response = JSON.parse(event.detail.__data__.response);
+var response =event.detail.__data__.response;
+//  console.log(event.detail.request.__data__.status);
+          if (response!=null) {
+            this.error = '';
+
+            this.elements = response;
+              console.log(this.elements);
+          }
+
+          // reset form data
+        //  this.searchInput = "";
+        },
+
+        handleSearchError: function(event) {
+          console.log(event);
+          this.error = event.detail.request.__data__.response.error;
+        }
+        // reset form data
+  //      this.searchData = {};
+//      }
+      });
+    }());
+  </script>
+</dom-module>
